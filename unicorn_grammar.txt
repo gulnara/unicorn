@@ -1,0 +1,50 @@
+file_input: stmt_list ENDMARKER
+
+stmt_list: (NEWLINE | stmt)*
+
+stmt: simple_stmt | compound_stmt
+
+simple_stmt: print_stmt | assignment
+
+print_stmt: 'show' (atom)+
+
+atom: ( NAME | NUMBER | STRING+ )
+
+compound_stmt: if_stmt | loop_stmt 
+
+if_stmt: is_stmt ( 'or' is_stmt)* [otherwise_stmt] 'end'
+
+if_stmt: 'is' test '?' then_stmt
+	('or' test '?' then_stmt )*
+	[otherwise_stmt]
+	'end'
+
+then_stmt: NEWLINE  'then' ':' (NEWLINE | stmt)*
+
+test: not_test
+
+not_test: 'not' not_test | comparison
+
+comparison: expr [comp_op expr]
+
+comp_op: '<'|'>'|'='|'>='|'<='|'=/='|!='
+
+expr: term (('+'|'-') term)*
+
+term: factor (('*'|'/'|'%'|'//') factor)*
+
+factor: ('+'|'-') factor | atom
+
+otherwise_stmt: 'otherwise' ':' (NEWLINE | stmt)* 'end'
+
+assignment: NAME '<-' expr
+
+assignment_list: (assignment NEWLINE | NEWLINE)*
+
+loop_stmt: 'loop' NAME ':' NEWLINE start_stmt
+			stmt_list 'end'
+
+start_stmt: 'starting' 'with' assignemnt_list 'end'
+
+
+

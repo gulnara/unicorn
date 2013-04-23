@@ -1,0 +1,45 @@
+#assignment is done with <- , equality is with only one =
+
+prompt <- '>'
+
+#printing is done with show 
+
+show 'What's your name?'
+
+#the input from user is taken with user_input (raw_input in python) using - sugar syntax
+
+name <- user_input using prompt
+
+show 'Hello' name
+
+show 'Let's play a game! Pick any number between 1 and 20.'
+
+# randomize is a method - will be defined with python random function in the environment
+
+i <- randomize using 1 to 20
+
+#loops have names and in order to break out of a loop you use stop + the name of the loop
+# the insides of the loop have to be indented 
+
+loop guessing:
+	starting with
+		initial guess <- 0
+	end
+
+	guess <- guess + 1
+
+	number <- number_input using prompt
+
+	#conditinal statements are defined with ?, then, otherwise and close with end:
+
+	is number < i ?
+		then show 'The number is too low. Try again.'
+
+	or is number > i ?
+		then show 'The number is too high. Try again.'
+
+	otherwise
+		show 'You guessed it! Great job' name 'You found my number in' guess 'tries.' 
+		stop guessing
+	end
+end  
