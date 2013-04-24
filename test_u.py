@@ -1,5 +1,8 @@
 import sys
 from unicorn_tokenizer import *
+from unicorn_parser import *
+
+
 
 if __name__ == '__main__':
 	filename = sys.argv[1]
@@ -7,5 +10,7 @@ if __name__ == '__main__':
 	characters = file.read()
 	file.close()
 	tokens = unicorn_tokenizer(characters)
-	for token in tokens:
-		print token
+	tree = parse(tokens)
+	print tree
+
+

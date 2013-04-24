@@ -1,9 +1,35 @@
-import unicorn_lexer
+import sys
+import re
 
-RESERVED = 'reserved'
-INT = 'int'
-STR = 'str'
-ID = 'id'
+def lex(characters, token_exprs):
+	pos = 0
+	tokens = []
+	while pos < len(characters):
+		match = None
+		for token_expr in token_exprs:
+			pattern, token_type = token_expr
+			regex = re.compile(pattern)
+			match = regex.match(characters, pos)
+			if match:
+				text = match.group(1)
+				if token_type:
+					# token = (text, tag)
+					token = token_type(text)
+					tokens.append(token)
+				break
+		if not match:
+			sys.stderr.write('Illegal character: %s\n' % characters[pos])
+			sys.exit(1)
+		else:
+			pos = match.end(0)
+	return tokens
+	print tokens
+	
+
+# RESERVED = 'reserved'
+# INT = 'int'
+# STR = 'str'
+# ID = 'id'
 
 class Token(object):
     def __init__(self, val):
@@ -21,17 +47,20 @@ class StringToken(Token):
 class ReservedToken(Token):
     pass
 
-class add_token(Token):
+class operator_add_token(Token):
     lbp = 10
     def led(self, left):
         right = expression(10)
         return left + right
 
 class IntToken(Token):
-    def __init__(self, val):
-        self.val = int(val)
+    def __init__(self, value):
+        self.value = int(value)
     def nud(self):
-        return self.val
+        return self.value
+
+class end_token:
+        lbp = 0
 
 RESERVED = ReservedToken
 
@@ -49,8 +78,8 @@ token_exprs = [
     (r'(:)',                     RESERVED),
     (r'(\.)',                    RESERVED),
     (r'(\!)',                    RESERVED),
-    (r'(\+)',                    add_token),
-    (r'(-)',                     RESERVED),
+    (r'(\+)',                    operator_add_token),
+    (r'(\-)',                     RESERVED),
     (r'(\*)',                    RESERVED),
     (r'(/)',                     RESERVED),
     (r'(<)',                     RESERVED),
@@ -80,5 +109,26 @@ token_exprs = [
     (r'\'',                    None),
 ]
 
-def unicorn_tokenizer(characters):
-	return unicorn_lexer.lex(characters, token_exprs)
+def unicorn_tokenizer(program):
+	return lex(program, token_exprs)
+
+def expression(rbp=0):
+    global token
+    t = token
+    token = next()
+    left = t.nud()
+    while rbp < token.lbp:
+        t = token
+        token = next()
+        left = t.led(left)
+    return left
+
+def parse(program):
+    global token, next
+    next = unicorn_tokenizer(program).next
+    token = next()
+    return expression()
+
+parse("1+1")
+
+

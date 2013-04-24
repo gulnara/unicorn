@@ -7,13 +7,14 @@ def lex(characters, token_exprs):
 	while pos < len(characters):
 		match = None
 		for token_expr in token_exprs:
-			pattern, tag = token_expr
+			pattern, token_type = token_expr
 			regex = re.compile(pattern)
 			match = regex.match(characters, pos)
 			if match:
 				text = match.group(1)
-				if tag:
-					token = (text, tag)
+				if token_type:
+					# token = (text, tag)
+					token = token_type(text)
 					tokens.append(token)
 				break
 		if not match:
@@ -22,3 +23,4 @@ def lex(characters, token_exprs):
 		else:
 			pos = match.end(0)
 	return tokens
+	
