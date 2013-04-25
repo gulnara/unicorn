@@ -1,10 +1,8 @@
 import unicorn_lexer
+tokens = []
+token = None
 
-RESERVED = 'reserved'
-INT = 'int'
-STR = 'str'
-ID = 'id'
-
+#
 class Token(object):
     def __init__(self, val):
         self.val = val
@@ -32,6 +30,9 @@ class IntToken(Token):
         self.val = int(val)
     def nud(self):
         return self.val
+
+class end_token:
+        lbp = 0
 
 RESERVED = ReservedToken
 
@@ -80,5 +81,35 @@ token_exprs = [
     (r'\'',                    None),
 ]
 
-def unicorn_tokenizer(characters):
-	return unicorn_lexer.lex(characters, token_exprs)
+def unicorn_tokenize(characters):
+    global tokens, token
+    tokens = unicorn_lexer.lex(characters, token_exprs)
+    token = tokens.pop(0)
+
+def next():
+    global token
+    if tokens:
+        next_t = tokens.pop(0)
+        token = next_t
+        return token
+    else:
+        return end_token()
+        # return None
+
+def expression(rbp=0):
+    global token
+    t = token
+    token = next()
+    left = t.nud()
+    while rbp < token.lbp:
+        t = token
+        token = next()
+        left = t.led(left)
+    return left
+
+def parse():
+    #global token, next
+    return expression()
+    # unicorn_tokenize(characters)
+    # token = next()
+    # return expression()

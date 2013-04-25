@@ -1,6 +1,8 @@
+# run this wil along with simple_test.txt in python shell to test parser
+
 import sys
 from unicorn_tokenizer import *
-from unicorn_parser import *
+import unicorn_tokenizer
 
 
 
@@ -9,8 +11,8 @@ if __name__ == '__main__':
 	file = open(filename)
 	characters = file.read()
 	file.close()
-	tokens = unicorn_tokenizer(characters)
-	tree = parse(tokens)
+
+	unicorn_tokenize(characters)
+	tree = parse()
 	print tree
-
-
+	
