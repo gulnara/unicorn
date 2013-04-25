@@ -2,6 +2,8 @@ import unicorn_lexer
 tokens = []
 token = None
 
+global_env = {}
+
 #
 class Token(object):
     def __init__(self, val):
@@ -21,15 +23,46 @@ class ReservedToken(Token):
 
 class add_token(Token):
     lbp = 10
+    def nud(self):
+        return expression(100)
     def led(self, left):
-        right = expression(10)
-        return left + right
+        return left + expression(10)
+
+class sub_token(Token):
+    lbp = 10
+    def nud(self):
+        return -expression(100)
+    def led(self, left):
+        return left - expression(10)
 
 class IntToken(Token):
     def __init__(self, val):
         self.val = int(val)
     def nud(self):
         return self.val
+
+# class Symbol(Token):
+#     def __init__(self, name):
+#         self.name = name
+
+#     def evaluate(self, env=global_env):
+#         return env.get(self.name)
+
+# class AssignStmt(Token):
+#     def __init__(self, symbol, expr):
+#         self.symbol = symbol
+#         self.expr = expr
+
+#     def evaluate(self, env=global_env):
+#         env[self.symbol.name] = self.expr.evaluate(env)
+
+
+# class Literal(Token):
+#     def __init__(self, val):
+#         self.val = val
+
+#     def evaluate(self, env=global_env):
+#         return self.val
 
 class end_token:
         lbp = 0
@@ -51,7 +84,7 @@ token_exprs = [
     (r'(\.)',                    RESERVED),
     (r'(\!)',                    RESERVED),
     (r'(\+)',                    add_token),
-    (r'(-)',                     RESERVED),
+    (r'(-)',                     sub_token),
     (r'(\*)',                    RESERVED),
     (r'(/)',                     RESERVED),
     (r'(<)',                     RESERVED),
@@ -108,8 +141,5 @@ def expression(rbp=0):
     return left
 
 def parse():
-    #global token, next
     return expression()
-    # unicorn_tokenize(characters)
-    # token = next()
-    # return expression()
+   
