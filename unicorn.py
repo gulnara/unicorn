@@ -35,11 +35,7 @@ class Literal(Expr):
 
 	def evaluate(self, env=global_env):
 		return self.val
-# class Conditional(Stmt):
-# 	def __init__(self, test, conseq, alt):
-# 		self.test = test
-# 		self.conseq = conseq
-# 		self.alt = alt	
+
 class ShowStmt(Stmt):
 	def __init__(self, param):
 		self.param = param
@@ -56,7 +52,39 @@ class Program(ParseNode):
 			instruction.evaluate(env)
 
 
-# def evaluate(x, env=global_env):
+class Token(object):
+	def __init__(self, val):
+		self.val = val
+class StringToken(Token):
+	pass
+class SymbolToken(Token):
+	pass
+class QuoteToken(Token):
+	pass
+class NewlineToken(Token):
+	pass
+
+if __name__ == "__main__":
+	"""
+	x <- "Hello World"
+	show x
+	"""
+
+	sym = Symbol("x")
+	l = Literal("Hello World")
+	assign = AssignStmt(sym, l)
+
+	sym = Symbol("x")
+	s = ShowStmt(sym)
+
+	instructions  = [assign, s]
+	p = Program(instructions)
+
+	p.evaluate()
+
+# [SymbolToken("x"), AssignToken(), QuoteToken(), StringToken("Hello World")...]
+
+	# def evaluate(x, env=global_env):
 # 	#Evaluate the expression in the environement
 # 	if isinstance(x, ShowStmt):
 # 		print evaluate(x.param)
@@ -77,35 +105,8 @@ class Program(ParseNode):
 	# 	else:
 	# 		return eval(x.alt)
 
-class Token(object):
-	def __init__(self, val):
-		self.val = val
-class StringToken(Token):
-	pass
-class SymbolToken(Token):
-	pass
-class QuoteToken(Token):
-	pass
-class NewlineToken(Token):
-	pass
-
-if __name__ == "__main__":
-	"""
-	x <- "Hello World"
-	show x
-	"""
-
-	# [SymbolToken("x"), AssignToken(), QuoteToken(), StringToken("Hello World")...]
-
-
-	sym = Symbol("x")
-	l = Literal("Hello World")
-	assign = AssignStmt(sym, l)
-
-	sym = Symbol("x")
-	s = ShowStmt(sym)
-
-	instructions  = [assign, s]
-	p = Program(instructions)
-
-	p.evaluate()
+# class Conditional(Stmt):
+# 	def __init__(self, test, conseq, alt):
+# 		self.test = test
+# 		self.conseq = conseq
+# 		self.alt = alt	

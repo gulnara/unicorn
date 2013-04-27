@@ -13,10 +13,18 @@ class Token(object):
         return "<%s %s>"%(self.__class__.__name__, self.val)
 
 class IdToken(Token):
-    pass
+    lbp = 10
+    def nud (self):
+        return self
+
+    def eval(self):
+        return self.val
 
 class StringToken(Token):
-    pass
+    def nud(self):
+        return self
+    def eval(self):
+        return self.val
 
 class ReservedToken(Token):
     pass
@@ -26,45 +34,65 @@ class add_token(Token):
     def nud(self):
         return expression(100)
     def led(self, left):
-        return left + expression(10)
+        self.first = left
+        self.second = expression(10)
+        return self
+    def eval(self):
+        return self.first.eval() + self.second.eval()
 
 class sub_token(Token):
     lbp = 10
     def nud(self):
         return -expression(100)
     def led(self, left):
-        return left - expression(10)
+        self.first = left
+        self.second = expression(10)
+        return self
+    def eval(self):
+        return self.first.eval() - self.second.eval()
+
+class mul_token(Token):
+    lbp = 20
+    def led(self, left):
+        self.first = left
+        self.second = expression(20)
+        return self
+    def eval(self):
+        return self.first.eval() * self.second.eval()
+
+class div_token(Token):
+    lbp = 20
+    def led(self, left):
+        self.first = left
+        self.second = expression(20)
+        return self 
+    def eval(self):
+        return self.first.eval() / self.second.eval()
 
 class IntToken(Token):
     def __init__(self, val):
         self.val = int(val)
     def nud(self):
+        return self
+
+    def eval(self):
         return self.val
 
-# class Symbol(Token):
-#     def __init__(self, name):
-#         self.name = name
+class show_token(Token):
+    def nud(self):
+        return self.val
 
-#     def evaluate(self, env=global_env):
-#         return env.get(self.name)
+class assign_token(Token):
+    lbp = 100
+    def led (self, left):
+        self.first = left
+        self.second = expression(10)
+        return self
 
-# class AssignStmt(Token):
-#     def __init__(self, symbol, expr):
-#         self.symbol = symbol
-#         self.expr = expr
+    def eval(self):
+        global_env[self.first.eval()] = self.second.eval()
 
-#     def evaluate(self, env=global_env):
-#         env[self.symbol.name] = self.expr.evaluate(env)
-
-
-# class Literal(Token):
-#     def __init__(self, val):
-#         self.val = val
-
-#     def evaluate(self, env=global_env):
-#         return self.val
-
-class end_token:
+class end_token():
         lbp = 0
 
 RESERVED = ReservedToken
@@ -75,7 +103,7 @@ token_exprs = [
     (r'([0-9]+)',                IntToken),
     (r'"(.*)"',                  StringToken),
     (r"'(.*)'",                  StringToken),
-    (r'(<-)',                    RESERVED),
+    (r'(<-)',                    assign_token),
     (r'(\?)',                    RESERVED),
     (r'(\()',                    RESERVED),
     (r'(\))',                    RESERVED),
@@ -85,8 +113,8 @@ token_exprs = [
     (r'(\!)',                    RESERVED),
     (r'(\+)',                    add_token),
     (r'(-)',                     sub_token),
-    (r'(\*)',                    RESERVED),
-    (r'(/)',                     RESERVED),
+    (r'(\*)',                    mul_token),
+    (r'(\/)',                    div_token),
     (r'(<)',                     RESERVED),
     (r'(<=)',                    RESERVED),
     (r'(>)',                     RESERVED),
@@ -103,7 +131,7 @@ token_exprs = [
     (r'(list)',                  RESERVED),
     (r'(starting)',              RESERVED),
     (r'(otherwise)',             RESERVED),
-    (r'(show)',                  RESERVED),
+    (r'(show)',                  show_token),
     (r'(stop)',                  RESERVED),
     (r'(end)',                   RESERVED),
     (r'(to)',                    RESERVED),
