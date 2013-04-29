@@ -4,7 +4,6 @@ token = None
 
 global_env = {}
 
-#
 class Token(object):
     def __init__(self, val):
         self.val = val
@@ -16,7 +15,6 @@ class IdToken(Token):
     lbp = 10
     def nud (self):
         return self
-
     def eval(self):
         return self.val
 
@@ -30,41 +28,41 @@ class ReservedToken(Token):
     pass
 
 class add_token(Token):
-    lbp = 10
+    lbp = 20
     def nud(self):
         return expression(100)
     def led(self, left):
         self.first = left
-        self.second = expression(10)
+        self.second = expression(20)
         return self
     def eval(self):
         return self.first.eval() + self.second.eval()
 
 class sub_token(Token):
-    lbp = 10
+    lbp = 20
     def nud(self):
         return -expression(100)
     def led(self, left):
         self.first = left
-        self.second = expression(10)
+        self.second = expression(20)
         return self
     def eval(self):
         return self.first.eval() - self.second.eval()
 
 class mul_token(Token):
-    lbp = 20
+    lbp = 30
     def led(self, left):
         self.first = left
-        self.second = expression(20)
+        self.second = expression(30)
         return self
     def eval(self):
         return self.first.eval() * self.second.eval()
 
 class div_token(Token):
-    lbp = 20
+    lbp = 30
     def led(self, left):
         self.first = left
-        self.second = expression(20)
+        self.second = expression(30)
         return self 
     def eval(self):
         return self.first.eval() / self.second.eval()
@@ -74,26 +72,35 @@ class IntToken(Token):
         self.val = int(val)
     def nud(self):
         return self
-
     def eval(self):
         return self.val
 
 class show_token(Token):
-    def nud(self):
-        return self.val
+    def std(self):
+        self.first = next()
+        return self
 
+    def nud(self):
+        self.second = expression(10)
+        return self
+    def eval(self):
+        print self.second.eval()
+        
 class assign_token(Token):
     lbp = 100
     def led (self, left):
         self.first = left
         self.second = expression(10)
         return self
-
     def eval(self):
         global_env[self.first.eval()] = self.second.eval()
 
 class end_token():
-        lbp = 0
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
 
 RESERVED = ReservedToken
 
@@ -155,7 +162,6 @@ def next():
         return token
     else:
         return end_token()
-        # return None
 
 def expression(rbp=0):
     global token
@@ -168,6 +174,8 @@ def expression(rbp=0):
         left = t.led(left)
     return left
 
+          
+        
 def parse():
     return expression()
    
