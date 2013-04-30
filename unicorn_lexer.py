@@ -15,9 +15,7 @@ def lex(characters, token_exprs):
 				if token_type:
 					# token = (text, tag)
 					token = token_type(text)
-					print token
 					tokens.append(token)
-					print tokens
 				break
 		if not match:
 			sys.stderr.write('Illegal character: %s\n' % characters[pos])

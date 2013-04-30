@@ -1,2 +1,6 @@
 show "hello world"
 show "cat"
+a <- 5
+show a
+b <- 1 + 1
+show b

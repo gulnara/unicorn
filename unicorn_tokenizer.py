@@ -8,8 +8,8 @@ class Token(object):
     def __init__(self, val):
         self.val = val
 
-    def __repr__(self):
-        return "<%s %s>"%(self.__class__.__name__, self.val)
+#    def __repr__(self):
+#        return "<%s %s>"%(self.__class__.__name__, self.val)
 
 class StatementToken(Token):
     def __init__(self, val):
@@ -19,15 +19,15 @@ class ExprToken(Token):
         pass
 
 class ShowToken(StatementToken):
+    lbp = None
     def std(self):
-        self.first = next()
+        next()
+        self.second = expression(0)
+        next(NewLineToken)
         return self
-    # def nud(self):
-    #     self.first = expression(10)
-    #     return self
     def eval(self):
-        print self.first.eval()
-
+        print self.second.eval()
+       
 
 # class IsToken(StatementToken):
 #         def std(self):
@@ -42,7 +42,7 @@ class IdToken(Token):
     def nud (self):
         return self
     def eval(self):
-        return self.val
+        return global_env[self.val]
 
 class StringToken(Token):
     def nud(self):
@@ -101,16 +101,7 @@ class IntToken(Token):
     def eval(self):
         return self.val
 
-# class show_token(Token):
-#     def std(self):
-#         self.first = next()
-#         return self
 
-#     def nud(self):
-#         self.second = expression(10)
-#         return self
-#     def eval(self):
-#         print self.second.eval()
         
 class AssignToken(Token):
     lbp = 100
@@ -119,9 +110,17 @@ class AssignToken(Token):
         self.second = expression(10)
         return self
     def eval(self):
-        global_env[self.first.eval()] = self.second.eval()
+        global_env[self.first.val] = self.second.eval()
 
-class EndToken():
+class EndToken(object):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
+
+
+class NewLineToken(Token):
     lbp = 0
     def led(self):
         pass
@@ -132,13 +131,14 @@ class EndToken():
 RESERVED = ReservedToken
 
 token_exprs = [
-    (r'([ \n\t\r]+)',            None),
+    (r'([ \t\r]+)',            None),
     (r'(#[^\n]*)',               None),
     (r'([0-9]+)',                IntToken),
     (r'"(.*)"',                  StringToken),
     (r"'(.*)'",                  StringToken),
     (r'(<-)',                    AssignToken),
     (r'(\?)',                    RESERVED),
+    (r'(\n)',                    NewLineToken),
     (r'(\()',                    RESERVED),
     (r'(\))',                    RESERVED),
     (r'(;)',                     RESERVED),
@@ -181,50 +181,68 @@ def unicorn_tokenize(characters):
     tokens = unicorn_lexer.lex(characters, token_exprs)
     token = tokens.pop(0)
 
-def next():
+def next(expected_token_type = None):
     global token
 
     if tokens:
+        if expected_token_type is not None:
+            if type(token) != expected_token_type:
+                raise Exception("OMG THIS SUCKS")
         next_t = tokens.pop(0)
         token = next_t
         return token
     else:
-        return end_token()
+        return EndToken()
 
 def expression(rbp=0):
     global token
     t = token
     token = next()
     left = t.nud()
-    while rbp < token.lbp:
-        t = token
-        token = next()
-        left = t.led(left)
+    if token.lbp is not None:
+
+        while rbp < token.lbp:
+            t = token
+            token = next()
+            left = t.led(left)
+    else:
+        statement()
     return left
 
 
 def statement():
     global token
-    if type(token) == ShowToken:
-
+    if isinstance(token, StatementToken):
         return token.std()
     else:
         expr = expression(0)
-        if type(expr) not in [AssignToken, FuncCallToken]:
-            raise "OMG THIS SUCKS"
+        next(NewLineToken)
+        if type(expr) not in [AssignToken]:
+            raise Exception("OMG THIS SUCKS")
         else:
-            expr
+            return expr
+
+class StatementList(StatementToken):
+    def __init__(self, statements):
+        self.statements = statements
+
+    def std(self):
+        pass
+
+    def eval(self):
+        for stmt in self.statements:
+            stmt.eval()
 
 def stmtlist():
-    whatever = []
-    while token != None:
+    whatever = [] 
+    while type(token) != EndToken:
         s = statement();
         whatever.append(s)
-    return whatever
+
+    stmt_list = StatementList(whatever)
+    return stmt_list
     
         
 def parse():
-    # while token != None:
-    return statement()
-    # return stmtlist()
+    return stmtlist()
    
