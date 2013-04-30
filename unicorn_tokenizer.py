@@ -11,6 +11,32 @@ class Token(object):
     def __repr__(self):
         return "<%s %s>"%(self.__class__.__name__, self.val)
 
+class StatementToken(Token):
+    def __init__(self, val):
+        self.val = val
+
+class ExprToken(Token):
+        pass
+
+class ShowToken(StatementToken):
+    def std(self):
+        self.first = next()
+        return self
+    # def nud(self):
+    #     self.first = expression(10)
+    #     return self
+    def eval(self):
+        print self.first.eval()
+
+
+# class IsToken(StatementToken):
+#         def std(self):
+#                 self.first = expression(0)
+#                 next(q_mark)
+#                 next(then)
+#                 self.second = stmt_list()
+#                 next(endif)
+
 class IdToken(Token):
     lbp = 10
     def nud (self):
@@ -27,7 +53,7 @@ class StringToken(Token):
 class ReservedToken(Token):
     pass
 
-class add_token(Token):
+class AddToken(Token):
     lbp = 20
     def nud(self):
         return expression(100)
@@ -38,7 +64,7 @@ class add_token(Token):
     def eval(self):
         return self.first.eval() + self.second.eval()
 
-class sub_token(Token):
+class SubToken(Token):
     lbp = 20
     def nud(self):
         return -expression(100)
@@ -49,7 +75,7 @@ class sub_token(Token):
     def eval(self):
         return self.first.eval() - self.second.eval()
 
-class mul_token(Token):
+class MulToken(Token):
     lbp = 30
     def led(self, left):
         self.first = left
@@ -58,7 +84,7 @@ class mul_token(Token):
     def eval(self):
         return self.first.eval() * self.second.eval()
 
-class div_token(Token):
+class DivToken(Token):
     lbp = 30
     def led(self, left):
         self.first = left
@@ -75,18 +101,18 @@ class IntToken(Token):
     def eval(self):
         return self.val
 
-class show_token(Token):
-    def std(self):
-        self.first = next()
-        return self
+# class show_token(Token):
+#     def std(self):
+#         self.first = next()
+#         return self
 
-    def nud(self):
-        self.second = expression(10)
-        return self
-    def eval(self):
-        print self.second.eval()
+#     def nud(self):
+#         self.second = expression(10)
+#         return self
+#     def eval(self):
+#         print self.second.eval()
         
-class assign_token(Token):
+class AssignToken(Token):
     lbp = 100
     def led (self, left):
         self.first = left
@@ -95,22 +121,23 @@ class assign_token(Token):
     def eval(self):
         global_env[self.first.eval()] = self.second.eval()
 
-class end_token():
+class EndToken():
     lbp = 0
     def led(self):
         pass
     def nud(self):
         pass
 
+
 RESERVED = ReservedToken
 
 token_exprs = [
-    (r'([ \n\t]+)',              None),
+    (r'([ \n\t\r]+)',            None),
     (r'(#[^\n]*)',               None),
     (r'([0-9]+)',                IntToken),
     (r'"(.*)"',                  StringToken),
     (r"'(.*)'",                  StringToken),
-    (r'(<-)',                    assign_token),
+    (r'(<-)',                    AssignToken),
     (r'(\?)',                    RESERVED),
     (r'(\()',                    RESERVED),
     (r'(\))',                    RESERVED),
@@ -118,10 +145,10 @@ token_exprs = [
     (r'(:)',                     RESERVED),
     (r'(\.)',                    RESERVED),
     (r'(\!)',                    RESERVED),
-    (r'(\+)',                    add_token),
-    (r'(-)',                     sub_token),
-    (r'(\*)',                    mul_token),
-    (r'(\/)',                    div_token),
+    (r'(\+)',                    AddToken),
+    (r'(-)',                     SubToken),
+    (r'(\*)',                    MulToken),
+    (r'(\/)',                    DivToken),
     (r'(<)',                     RESERVED),
     (r'(<=)',                    RESERVED),
     (r'(>)',                     RESERVED),
@@ -138,13 +165,13 @@ token_exprs = [
     (r'(list)',                  RESERVED),
     (r'(starting)',              RESERVED),
     (r'(otherwise)',             RESERVED),
-    (r'(show)',                  show_token),
+    (r'(show)',                  ShowToken),
     (r'(stop)',                  RESERVED),
     (r'(end)',                   RESERVED),
     (r'(to)',                    RESERVED),
     (r'(using)',                 RESERVED),
     (r'(randomize)',             RESERVED),
-    (r'(prompt)',             RESERVED),
+    (r'(prompt)',                RESERVED),
     (r'([A-Za-z][A-Za-z0-9_]*)', IdToken),    
     (r'\'',                    None),
 ]
@@ -156,6 +183,7 @@ def unicorn_tokenize(characters):
 
 def next():
     global token
+
     if tokens:
         next_t = tokens.pop(0)
         token = next_t
@@ -174,8 +202,29 @@ def expression(rbp=0):
         left = t.led(left)
     return left
 
-          
+
+def statement():
+    global token
+    if type(token) == ShowToken:
+
+        return token.std()
+    else:
+        expr = expression(0)
+        if type(expr) not in [AssignToken, FuncCallToken]:
+            raise "OMG THIS SUCKS"
+        else:
+            expr
+
+def stmtlist():
+    whatever = []
+    while token != None:
+        s = statement();
+        whatever.append(s)
+    return whatever
+    
         
 def parse():
-    return expression()
+    # while token != None:
+    return statement()
+    # return stmtlist()
    

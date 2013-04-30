@@ -1,0 +1,158 @@
+list HANGMAN 
+
+HANGMAN:0 <-  '''
+  +---+
+  |   |
+      |
+      |
+      |
+      |
+========='''
+
+HANGMAN:1 <-  '''
+
+  +---+
+  |   |
+  O   |
+      |
+      |
+      |
+========='''
+
+HANGMAN:2 <- '''
+
+  +---+
+  |   |
+  O   |
+  |   |
+      |
+      |
+========='''
+
+HANGMAN:3 <- '''
+
+  +---+
+  |   |
+  O   |
+ /|   |
+      |
+      |
+========='''
+
+HANGMAN:4 <- '''
+
+  +---+
+  |   |
+  O   |
+ /|\  |
+      |
+      |
+========='''
+
+HANGMAN:5 '''
+
+  +---+
+  |   |
+  O   |
+ /|\  |
+ /    |
+      |
+========='''
+
+HANGMAN:6 '''
+
+  +---+
+  |   |
+  O   |
+ /|\  |
+ / \  |
+      |
+========='''
+
+MAX_WRONG <- length of HANGMAN
+
+list WORDS 
+
+WORDS:0 <- 'animal'
+WORDS:1 <- 'chicken'
+WORDS:2 <- 'python'
+
+word <- choose_random from WORDS
+
+word_len <- length of word
+so_far <- repeat using '-' and word_len
+
+# repeat '-' times word_len
+
+show 'Welcome to Hangman'
+
+loop first:
+  starting with
+    wrong <- 0
+    list used
+  end
+
+  show HANGMAN:wrong
+
+  show 'you used the following letters:' used
+
+  show 'so far the word is ' so_far
+
+  guess <- user_input using 'enter your guess'
+
+  guess <- lowercase of guess
+  
+  is wrong < MAX_WRONG and so_far != word ?
+    stop first
+  end
+
+  loop second:
+
+    show 'you already guess the letter', guess
+    guess <- user_input using 'enter a guess'
+    guess <- lowercase of guess
+
+    is guess not in list used?
+      stop second
+    end
+  end
+
+  list used:END <- guess
+
+  is guess in word ?
+    then show 'yes ' guess ' is in the word!'
+    
+    loop three:
+      starting with
+        new <- ''
+        i <-0 
+      end
+
+      is guess = word:i?
+        then new <- new + guess
+      
+      otherwise
+        new <- new + so_far:i
+        stop three
+      so_far <- new
+      end
+    end
+
+  otherwise
+    show 'sorry', guess, 'isn't in the word'
+    wrong <- wrong + 1
+  end
+end
+
+is wrong <- MAX_WRONG ?
+  then show list HANGMAN:wrong
+       show 'you hav been hanged'
+otherwise
+  show 'u guessed it', word
+end
+
+show 'the word was', word
+
+user_input using 'press enter to exit'
+
+
