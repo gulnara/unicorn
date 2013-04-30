@@ -35,7 +35,7 @@ loop guessing:
 	is number < i ? then:
 		show 'The number is too low. Try again.'
 
-# finish with then in order to hve multiple expressions
+# finish with then in order to have multiple expressions
 	or is number > i ? then:
 		show 'The number is too high. Try again.'
 

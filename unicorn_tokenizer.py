@@ -8,8 +8,8 @@ class Token(object):
     def __init__(self, val):
         self.val = val
 
-#    def __repr__(self):
-#        return "<%s %s>"%(self.__class__.__name__, self.val)
+    def __repr__(self):
+       return "<%s %s>"%(self.__class__.__name__, self.val)
 
 class StatementToken(Token):
     def __init__(self, val):
@@ -29,13 +29,56 @@ class ShowToken(StatementToken):
         print self.second.eval()
        
 
-# class IsToken(StatementToken):
-#         def std(self):
-#                 self.first = expression(0)
-#                 next(q_mark)
-#                 next(then)
-#                 self.second = stmt_list()
-#                 next(endif)
+class IsToken(StatementToken):
+    def std(self):
+        self.first = expression(0)
+        next(QuestionToken)
+        next(ThenToken)
+        next(NewLineToken)
+        self.second = stmt_list()
+        next(EndToken)
+        next(NewLineToken)
+        return self
+    def eval(self):
+        if self.first == True:
+            print self.second.eval()
+        else:
+            print False
+
+class QuestionToken(Token):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
+
+class ThenToken(Token):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
+
+class OrToken(Token):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
+
+class OtherwiseToken(Token):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
+
+class EndToken(Token):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
 
 class IdToken(Token):
     lbp = 10
@@ -102,7 +145,6 @@ class IntToken(Token):
         return self.val
 
 
-        
 class AssignToken(Token):
     lbp = 100
     def led (self, left):
@@ -118,7 +160,6 @@ class EndToken(object):
         pass
     def nud(self):
         pass
-
 
 class NewLineToken(Token):
     lbp = 0
@@ -137,7 +178,7 @@ token_exprs = [
     (r'"(.*)"',                  StringToken),
     (r"'(.*)'",                  StringToken),
     (r'(<-)',                    AssignToken),
-    (r'(\?)',                    RESERVED),
+    (r'(\?)',                    QuestionToken),
     (r'(\n)',                    NewLineToken),
     (r'(\()',                    RESERVED),
     (r'(\))',                    RESERVED),
@@ -157,17 +198,17 @@ token_exprs = [
     (r'(!=)',                    RESERVED),
     (r'(=/=)',                   RESERVED),
     (r'(and)',                   RESERVED),
-    (r'(or)',                    RESERVED),
+    (r'(or)',                    OrToken),
     (r'(not)',                   RESERVED),
-    (r'(is)',                    RESERVED),
-    (r'(then)',                  RESERVED),
+    (r'(is)',                    IsToken),
+    (r'(then)',                 ThenToken),
     (r'(loop)',                  RESERVED),
     (r'(list)',                  RESERVED),
     (r'(starting)',              RESERVED),
-    (r'(otherwise)',             RESERVED),
+    (r'(otherwise)',             OtherwiseToken),
     (r'(show)',                  ShowToken),
     (r'(stop)',                  RESERVED),
-    (r'(end)',                   RESERVED),
+    (r'(end)',                   EndToken),
     (r'(to)',                    RESERVED),
     (r'(using)',                 RESERVED),
     (r'(randomize)',             RESERVED),
@@ -200,7 +241,6 @@ def expression(rbp=0):
     token = next()
     left = t.nud()
     if token.lbp is not None:
-
         while rbp < token.lbp:
             t = token
             token = next()
