@@ -57,12 +57,18 @@ show userinput
 i <- randomize using 1 to 20
 show i
 
-
-
+#a simple guessing game - stops after each try.
 show "What's your name?"
 name <- prompt
 show "hello"
 show name
 show "Let's play a game! Pick any number between 1 and 20."
 number <- randomize using 1 to 20
+usernumber <- prompt
+is usernumber < number ? then:
+show 'The number is too low. Try again.'
+or usernumber > number ? then:
+show 'The number is too high. Try again.'
+otherwise:
+show 'You guessed it! Great job! You found my number!' 
 
