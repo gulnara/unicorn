@@ -8,3 +8,7 @@
 # ++ works as + 
 
 #if the test file has an extra line at the end, the program breaks
+
+#conditionals can have only 1 or stmt and must have otherwise
+
+#can't concat print statements with variables

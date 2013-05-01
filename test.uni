@@ -1,3 +1,20 @@
-show "What's your name?"
-userinput <- prompt
-show userinput
+loop guessing:
+	starting with
+		initial guess <- 0
+	end
+
+	guess <- guess + 1
+
+	number <- number_input using prompt
+
+	is number < i ? then:
+		show 'The number is too low. Try again.'
+
+	or is number > i ? then:
+		show 'The number is too high. Try again.'
+
+	otherwise:
+		show 'You guessed it! Great job' name 'You found my number in' guess 'tries.' 
+		stop guessing
+	end
+end 

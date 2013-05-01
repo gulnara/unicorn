@@ -1,4 +1,5 @@
 import unicorn_lexer
+import random
 tokens = []
 token = None
 
@@ -35,12 +36,33 @@ class PromptToken(Token):
     def eval(self):
         self.val = raw_input()
         return self.val
-    #     next()
-    #     self.second = expression(0)
-    #     next(NewLineToken)
-    #     return self
-    # def eval(self):
-    #     print self.second.eval()
+
+class RandomToken(Token):
+    lbp = 10
+    def nud(self):
+        next(UsingToken)
+        self.first = expression(0)
+        next(ToToken)
+        self.second = expression(0)
+        # next(NewLineToken)
+        return self
+    def eval(self):
+        self.val = random.randint(self.first.eval(), self.second.eval())
+        return self.val
+
+class UsingToken(Token):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
+
+class ToToken(Token):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
 
 class IsToken(StatementToken):
     def std(self):
@@ -236,6 +258,15 @@ class IntToken(Token):
     def eval(self):
         return self.val
 
+#not finished
+class ConcatToken(Token):
+    lbp = 20
+    def led(self):
+        self.second = expression(20)
+        return self
+    def eval(self):
+        print self.second.eval()
+
 
 class AssignToken(Token):
     lbp = 100
@@ -279,6 +310,7 @@ token_exprs = [
     (r'(;)',                     RESERVED),
     (r'(:)',                     RESERVED),
     (r'(\.)',                    RESERVED),
+    (r'(\,)',                    ConcatToken),
     (r'(\!)',                    RESERVED),
     (r'(\+)',                    AddToken),
     (r'(-)',                     SubToken),
@@ -303,9 +335,9 @@ token_exprs = [
     (r'(show)',                  ShowToken),
     (r'(stop)',                  RESERVED),
     (r'(end)',                   EndToken),
-    (r'(to)',                    RESERVED),
-    (r'(using)',                 RESERVED),
-    (r'(randomize)',             RESERVED),
+    (r'(to)',                    ToToken),
+    (r'(using)',                 UsingToken),
+    (r'(randomize)',             RandomToken),
     (r'(prompt)',                PromptToken),
     (r'([A-Za-z][A-Za-z0-9_]*)', IdToken),    
     (r'\'',                    None),

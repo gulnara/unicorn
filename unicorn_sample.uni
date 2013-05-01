@@ -48,4 +48,21 @@ show "moo"
 otherwise:
 show "cat"
 
+#asks user what's his/her name , takes and stores the input, displays the input
+show "What's your name?"
+userinput <- prompt
+show userinput
+
+#picks a random number from a range from 1 to 20
+i <- randomize using 1 to 20
+show i
+
+
+
+show "What's your name?"
+name <- prompt
+show "hello"
+show name
+show "Let's play a game! Pick any number between 1 and 20."
+number <- randomize using 1 to 20
 
