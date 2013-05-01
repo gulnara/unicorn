@@ -29,7 +29,15 @@ class ShowToken(StatementToken):
     def eval(self):
         print self.second.eval()
 
-class PromptToken(Token):
+class NumberPromptToken(Token):
+    lbp = 10
+    def nud(self):
+        return self
+    def eval(self):
+        self.val = int(raw_input())
+        return self.val
+
+class StringPromptToken(Token):
     lbp = 10
     def nud(self):
         return self
@@ -68,23 +76,24 @@ class IsToken(StatementToken):
     def std(self):
         next()
         self.first = expression(0)
+        print "first", self.first
         next(QuestionToken)
         next(ThenToken)
         next(NewLineToken)
         self.second = statement()
-        # print "second", self.second
+        print "second", self.second
         next(OrToken)
         self.third = expression(0)
-        # print "third", self.third
+        print "third", self.third
         next(QuestionToken)
         next(ThenToken)
         next(NewLineToken)
         self.fourth = statement()
-        # print "fourth", self.fourth
+        print "fourth", self.fourth
         next(OtherwiseToken)
         next()
         self.fifth = statement()
-        # print "fifth", self.fifth
+        print "fifth", self.fifth
         return self
     def eval(self): 
         if self.first.eval() is True:
@@ -343,7 +352,8 @@ token_exprs = [
     (r'(to)',                    ToToken),
     (r'(using)',                 UsingToken),
     (r'(randomize)',             RandomToken),
-    (r'(prompt)',                PromptToken),
+    (r'(number_prompt)',         NumberPromptToken),
+    (r'(string_prompt)',         StringPromptToken),
     (r'([A-Za-z][A-Za-z0-9_]*)', IdToken),    
     (r'\'',                    None),
 ]
@@ -352,7 +362,7 @@ def unicorn_tokenize(characters):
     global tokens, token
     tokens = unicorn_lexer.lex(characters, token_exprs)
     token = tokens.pop(0)
-    print tokens
+    # print tokens
 
 def next(expected_token_type = None):
     global token
@@ -389,8 +399,8 @@ def statement():
     else:
         expr = expression(0)
         next(NewLineToken)
-        if type(expr) not in [AssignToken, MoreToken, LessToken, MoreEqualToken, LessEqualToken, EqualToken]:
-            raise Exception("OMG THIS SUCKS EVEN MORE")
+        if type(expr) not in [AssignToken, MoreToken, LessToken, MoreEqualToken, LessEqualToken, StringPromptToken, EqualToken, NumberPromptToken, RandomToken]:
+            raise Exception("such expression doesn't exist")
         else:
             return expr
 
