@@ -1,14 +1,4 @@
-is 5<4 ? then:
-show "less?"
-
-is 6>3 ? then:
-show "more?"
-
-is 6=6 ? then:
-show "equal?"
-
-is 7>=7 ? then:
-show "more or equal"
-
-is 8<=8 ? then:
-show "less or equal"
+is 4<1 ? then:
+show "The number is too low. Try again."
+otherwise:
+show "cat"

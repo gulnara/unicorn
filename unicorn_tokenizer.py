@@ -33,22 +33,20 @@ class IsToken(StatementToken):
     def std(self):
         next()
         self.first = expression(0)
-        # print "this is self.first", self.first
         next(QuestionToken)
         next(ThenToken)
         next(NewLineToken)
-
         self.second = statement()
-        # print "this is self.second", self.second
-        next(NewLineToken)
-        # next(EndToken)
-        # next(NewLineToken)
+        next(OtherwiseToken)
+        next()
+        self.third = statement()
+        print "this is third", self.third
         return self
     def eval(self): 
         if self.first.eval() is True:
             return self.second.eval()
         else:
-            print "False"
+            return self.third.eval()
 
 class QuestionToken(Token):
     lbp = 0
@@ -228,7 +226,7 @@ class AssignToken(Token):
     def eval(self):
         global_env[self.first.val] = self.second.eval()
 
-class EndToken(object):
+class FinalToken(object):
     lbp = 0
     def led(self):
         pass
@@ -279,7 +277,7 @@ token_exprs = [
     (r'(loop)',                  RESERVED),
     (r'(list)',                  RESERVED),
     (r'(starting)',              RESERVED),
-    (r'(otherwise)',             OtherwiseToken),
+    (r'(otherwise:)',             OtherwiseToken),
     (r'(show)',                  ShowToken),
     (r'(stop)',                  RESERVED),
     (r'(end)',                   EndToken),
@@ -308,7 +306,7 @@ def next(expected_token_type = None):
         token = next_t
         return token
     else:
-        return EndToken()
+        return FinalToken()
 
 def expression(rbp=0):
     global token
@@ -332,7 +330,7 @@ def statement():
     else:
         expr = expression(0)
         next(NewLineToken)
-        if type(expr) not in [AssignToken, MoreToken]:
+        if type(expr) not in [AssignToken, MoreToken, LessToken, MoreEqualToken, LessEqualToken, EqualToken]:
             raise Exception("OMG THIS SUCKS EVEN MORE")
         else:
             return expr
@@ -350,7 +348,7 @@ class StatementList(StatementToken):
 
 def stmtlist():
     whatever = [] 
-    while type(token) != EndToken:
+    while type(token) != FinalToken:
         s = statement();
         whatever.append(s)
     stmt_list = StatementList(whatever)
