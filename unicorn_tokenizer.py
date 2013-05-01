@@ -126,6 +126,34 @@ class EqualToken(Token):
             # print "false"
             return False 
 
+class MoreEqualToken(Token):
+    lbp = 20
+    def led(self, left):
+        self.first = left
+        self.second = expression(20)
+        return self
+    def eval(self):
+        if self.first.eval() >= self.second.eval():
+            # print "true"
+            return True
+        else:
+            # print "false"
+            return False 
+
+class LessEqualToken(Token):
+    lbp = 20
+    def led(self, left):
+        self.first = left
+        self.second = expression(20)
+        return self
+    def eval(self):
+        if self.first.eval() <= self.second.eval():
+            # print "true"
+            return True
+        else:
+            # print "false"
+            return False 
+
 class IdToken(Token):
     lbp = 10
     def nud (self):
@@ -236,11 +264,11 @@ token_exprs = [
     (r'(-)',                     SubToken),
     (r'(\*)',                    MulToken),
     (r'(\/)',                    DivToken),
-    (r'(<)',                     LessToken),
-    (r'(<=)',                    RESERVED),
-    (r'(>)',                     MoreToken),
-    (r'(>=)',                    RESERVED),
+    (r'(<=)',                    LessEqualToken),
+    (r'(>=)',                    MoreEqualToken),
     (r'(=)',                     EqualToken),
+    (r'(<)',                     LessToken),
+    (r'(>)',                     MoreToken),
     (r'(!=)',                    RESERVED),
     (r'(=/=)',                   RESERVED),
     (r'(and)',                   RESERVED),
