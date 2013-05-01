@@ -37,16 +37,23 @@ class IsToken(StatementToken):
         next(ThenToken)
         next(NewLineToken)
         self.second = statement()
+        next(OrToken)
+        self.third = expression(0)
+        next(QuestionToken)
+        next(ThenToken)
+        next(NewLineToken)
+        self.fourth = statement()
         next(OtherwiseToken)
         next()
-        self.third = statement()
-        print "this is third", self.third
+        self.fifth = statement()
         return self
     def eval(self): 
         if self.first.eval() is True:
             return self.second.eval()
+        elif self.third.eval() is True:
+            return self.fourth.eval()
         else:
-            return self.third.eval()
+            return self.fifth.eval()
 
 class QuestionToken(Token):
     lbp = 0

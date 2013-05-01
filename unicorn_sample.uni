@@ -37,3 +37,12 @@ a <- 10
 #check if a is less than 20, print stmt if yes
 is a < 20 ? then:
 show 'The number is too low. Try again.'
+
+#is/otherwise cases
+is 4<1 ? then:
+show "The number is too low. Try again."
+otherwise:
+show "cat"
+
+
+

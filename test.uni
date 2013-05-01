@@ -1,4 +1,8 @@
-is 4<1 ? then:
+a <- 5
+b <- 10
+is a<b ? then:
 show "The number is too low. Try again."
+or a>b ? then:
+show "moo"
 otherwise:
 show "cat"
