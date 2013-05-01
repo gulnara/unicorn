@@ -72,15 +72,19 @@ class IsToken(StatementToken):
         next(ThenToken)
         next(NewLineToken)
         self.second = statement()
+        # print "second", self.second
         next(OrToken)
         self.third = expression(0)
+        # print "third", self.third
         next(QuestionToken)
         next(ThenToken)
         next(NewLineToken)
         self.fourth = statement()
+        # print "fourth", self.fourth
         next(OtherwiseToken)
         next()
         self.fifth = statement()
+        # print "fifth", self.fifth
         return self
     def eval(self): 
         if self.first.eval() is True:
@@ -328,12 +332,13 @@ token_exprs = [
     (r'(not)',                   RESERVED),
     (r'(is)',                    IsToken),
     (r'(then:)',                 ThenToken),
-    (r'(loop)',                  RESERVED),
+    # (r'(loop)',                  LoopToken),
     (r'(list)',                  RESERVED),
-    (r'(starting)',              RESERVED),
+    # (r'(with)',                  WithToken),
+    # (r'(starting)',              StartingToken),
     (r'(otherwise:)',            OtherwiseToken),
     (r'(show)',                  ShowToken),
-    (r'(stop)',                  RESERVED),
+    # (r'(stop)',                  StopToken),
     (r'(end)',                   EndToken),
     (r'(to)',                    ToToken),
     (r'(using)',                 UsingToken),

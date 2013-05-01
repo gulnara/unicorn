@@ -17,16 +17,15 @@ loop guessing:
 
 	guess <- guess + 1
 
-	number <- number_input using prompt
+	usernumber <- prompt
 
-	is number < i ? then:
+	is usernumber < number ? then:
 		show 'The number is too low. Try again.'
 
-	or is number > i ? then:
+	or usernumber > number ? then:
 		show 'The number is too high. Try again.'
 
 	otherwise:
-		show 'You guessed it! Great job' name 'You found my number in' guess 'tries.' 
+		show 'You guessed it! Great job! You found my number!' 
 		stop guessing
-	end
-end  
+end 
