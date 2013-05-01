@@ -8,8 +8,8 @@ class Token(object):
     def __init__(self, val):
         self.val = val
 
-    def __repr__(self):
-       return "<%s %s>"%(self.__class__.__name__, self.val)
+    # def __repr__(self):
+    #     return "<%s %s>"%(self.__class__.__name__, self.val)
 
 class StatementToken(Token):
     def __init__(self, val):
@@ -31,19 +31,24 @@ class ShowToken(StatementToken):
 
 class IsToken(StatementToken):
     def std(self):
+        next()
         self.first = expression(0)
+        # print "this is self.first", self.first
         next(QuestionToken)
         next(ThenToken)
         next(NewLineToken)
-        self.second = stmt_list()
-        next(EndToken)
+
+        self.second = statement()
+        # print "this is self.second", self.second
         next(NewLineToken)
+        # next(EndToken)
+        # next(NewLineToken)
         return self
-    def eval(self):
-        if self.first == True:
-            print self.second.eval()
+    def eval(self): 
+        if self.first.eval() is True:
+            return self.second.eval()
         else:
-            print False
+            print "False"
 
 class QuestionToken(Token):
     lbp = 0
@@ -79,6 +84,47 @@ class EndToken(Token):
         pass
     def nud(self):
         pass
+
+class MoreToken(Token):
+    lbp = 20
+    def led(self, left):
+        self.first = left
+        self.second = expression(20)
+        return self
+    def eval(self):
+        if self.first.eval() > self.second.eval():
+            # print "true"
+            return True
+        else:
+            # print "false"
+            return False
+
+class LessToken(Token):
+    lbp = 20
+    def led(self, left):
+        self.first = left
+        self.second = expression(20)
+        return self
+    def eval(self):
+        if self.first.eval() < self.second.eval():
+            # print "true"
+            return True
+        else:
+            # print "false"
+            return False           
+class EqualToken(Token):
+    lbp = 20
+    def led(self, left):
+        self.first = left
+        self.second = expression(20)
+        return self
+    def eval(self):
+        if self.first.eval() == self.second.eval():
+            # print "true"
+            return True
+        else:
+            # print "false"
+            return False 
 
 class IdToken(Token):
     lbp = 10
@@ -190,18 +236,18 @@ token_exprs = [
     (r'(-)',                     SubToken),
     (r'(\*)',                    MulToken),
     (r'(\/)',                    DivToken),
-    (r'(<)',                     RESERVED),
+    (r'(<)',                     LessToken),
     (r'(<=)',                    RESERVED),
-    (r'(>)',                     RESERVED),
+    (r'(>)',                     MoreToken),
     (r'(>=)',                    RESERVED),
-    (r'(=)',                     RESERVED),
+    (r'(=)',                     EqualToken),
     (r'(!=)',                    RESERVED),
     (r'(=/=)',                   RESERVED),
     (r'(and)',                   RESERVED),
     (r'(or)',                    OrToken),
     (r'(not)',                   RESERVED),
     (r'(is)',                    IsToken),
-    (r'(then)',                 ThenToken),
+    (r'(then:)',                 ThenToken),
     (r'(loop)',                  RESERVED),
     (r'(list)',                  RESERVED),
     (r'(starting)',              RESERVED),
@@ -221,6 +267,7 @@ def unicorn_tokenize(characters):
     global tokens, token
     tokens = unicorn_lexer.lex(characters, token_exprs)
     token = tokens.pop(0)
+    print tokens
 
 def next(expected_token_type = None):
     global token
@@ -257,8 +304,8 @@ def statement():
     else:
         expr = expression(0)
         next(NewLineToken)
-        if type(expr) not in [AssignToken]:
-            raise Exception("OMG THIS SUCKS")
+        if type(expr) not in [AssignToken, MoreToken]:
+            raise Exception("OMG THIS SUCKS EVEN MORE")
         else:
             return expr
 
@@ -278,7 +325,6 @@ def stmtlist():
     while type(token) != EndToken:
         s = statement();
         whatever.append(s)
-
     stmt_list = StatementList(whatever)
     return stmt_list
     

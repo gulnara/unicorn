@@ -14,7 +14,6 @@ if __name__ == '__main__':
 
 	unicorn_tokenize(characters)
 	tree = parse()
-#	print tree
 	tree.eval()
-	#print unicorn_tokenizer.global_env
+	print unicorn_tokenizer.global_env
 	

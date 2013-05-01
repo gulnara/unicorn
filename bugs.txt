@@ -6,3 +6,5 @@
 
 
 # ++ works as + 
+
+#if the test file has an extra line at the end, the program breaks

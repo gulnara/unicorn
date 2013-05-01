@@ -1,6 +1,8 @@
-show "hello world"
-show "cat"
-a <- 5
-show a
-b <- 1 + 1
-show b
+is 5<4 ? then:
+show "less?"
+
+is 6>3 ? then:
+show "more?"
+
+is 6=6 ? then:
+show "equal?"
