@@ -27,7 +27,20 @@ class ShowToken(StatementToken):
         return self
     def eval(self):
         print self.second.eval()
-       
+
+class PromptToken(Token):
+    lbp = 10
+    def nud(self):
+        return self
+    def eval(self):
+        self.val = raw_input()
+        return self.val
+    #     next()
+    #     self.second = expression(0)
+    #     next(NewLineToken)
+    #     return self
+    # def eval(self):
+    #     print self.second.eval()
 
 class IsToken(StatementToken):
     def std(self):
@@ -228,6 +241,8 @@ class AssignToken(Token):
     lbp = 100
     def led (self, left):
         self.first = left
+        # self.second = statement()
+        # print "this is second", self.second
         self.second = expression(10)
         return self
     def eval(self):
@@ -284,14 +299,14 @@ token_exprs = [
     (r'(loop)',                  RESERVED),
     (r'(list)',                  RESERVED),
     (r'(starting)',              RESERVED),
-    (r'(otherwise:)',             OtherwiseToken),
+    (r'(otherwise:)',            OtherwiseToken),
     (r'(show)',                  ShowToken),
     (r'(stop)',                  RESERVED),
     (r'(end)',                   EndToken),
     (r'(to)',                    RESERVED),
     (r'(using)',                 RESERVED),
     (r'(randomize)',             RESERVED),
-    (r'(prompt)',                RESERVED),
+    (r'(prompt)',                PromptToken),
     (r'([A-Za-z][A-Za-z0-9_]*)', IdToken),    
     (r'\'',                    None),
 ]

@@ -38,11 +38,14 @@ a <- 10
 is a < 20 ? then:
 show 'The number is too low. Try again.'
 
-#is/otherwise cases
-is 4<1 ? then:
+#will print out the number is too low
+a <- 5
+b <- 10
+is a<b ? then:
 show "The number is too low. Try again."
+or a>b ? then:
+show "moo"
 otherwise:
 show "cat"
-
 
 
