@@ -89,3 +89,44 @@ otherwise:
 show 'You guessed it! Great job! You found my number!'
 show "yey"
 end
+
+#many or statements
+number1 <- 10
+number2 <- 20
+number3 <- 30
+is number1 > number2 ? then:
+show 'test 1.'
+show 'cat'
+end
+or number1 > number2 ? then:
+show 'test 2'
+show 'moo'
+end
+or number3 > number2 ? then:
+show 'test 3'
+show 'moo'
+end
+otherwise:
+show 'test 4!'
+show "yey"
+end
+
+
+number <- 5
+loop guessing:
+starting with
+guess <- 0
+end
+guess <- guess + 1
+usernumber <- number_prompt
+is usernumber < number ? then:
+show 'The number is too low. Try again.'
+end
+or usernumber > number ? then:
+show 'The number is too high. Try again.'
+end
+otherwise:
+show 'You guessed it! Great job! You found my number!'
+stop guessing
+end
+end

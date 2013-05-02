@@ -10,8 +10,8 @@ class Token(object):
     def __init__(self, val):
         self.val = val
 
-    # def __repr__(self):
-    #     return "<%s %s>"%(self.__class__.__name__, self.val)
+    def __repr__(self):
+        return "<%s %r>"%(self.__class__.__name__, self.val)
 
 class StatementToken(Token):
     def __init__(self, val):
@@ -79,21 +79,18 @@ class IsToken(StatementToken):
         self.conditionals = []
         self.cond = expression(0)
         # print "cond", self.cond
-        # print "first", self.first
         next(QuestionToken)
         next(ThenToken)
-        next(NewLineToken)
+        # next()
+        # next(NewLineToken)
         self.action = stmtlist()
+        # print "action ", self.action
         # print "this is action", self.action
         self.conditionals.append( (self.cond, self.action) )
         # print "if ", self.conditionals
         # print "second", self.second
-
-        # next(OrToken)
-        # next()
-        # next(NewLineToken)
         next(EndToken)  
-        next()
+        # next()
         
         while type(token) == OrToken:
             next()
@@ -101,24 +98,25 @@ class IsToken(StatementToken):
             # print "or cond", self.cond
             next(QuestionToken)
             next(ThenToken)
-            next(NewLineToken)
+            # next(NewLineToken)
             self.action = stmtlist()
             self.conditionals.append( (self.cond, self.action) )
             # print "or", self.conditionals
             # next(NewLineToken)
             next(EndToken)
-            next()
-            # next(NewLineToken)
+            # next()
         if type(token) == OtherwiseToken:
             next()
-            next(NewLineToken)
+            # next(NewLineToken)
             self.otherwise_action = stmtlist()
             # print "otherwise", self.otherwise_action
             # next(NewLineToken)
+            # next()
             next(EndToken)
+            # next()
         else:
             self.otherwise_action = None
-        
+        # next()
         return self
     def eval(self): 
         for self.cond, self.action in self.conditionals:
@@ -319,39 +317,76 @@ class AssignToken(Token):
 
 
 class LoopToken(StatementToken):
-    std = None
+    lbp = None
     def std (self):
         loop_name = next().val
         self.name = loop_name
+        print "name", self.name
+        next()
         next(ColonToken)
         next(NewLineToken)
-        next()
         self.loop_vars = []
-        if instanceof(token, StartingToken):
+        print type(token)
+        if type(token) == StartingToken:
+            next()
+            print "Reading start section"
             next(WithToken)
-            while not instanceof(token, EndToken):
+          
+            while not type(token) == EndToken:
                 self.loop_vars.append(expression(0))
-                next(NewLineToken)
-        # self.second = expression(10)
+                # next(NewLineToken)
+            next(EndToken)
+            # next()
+            # next(NewLineToken)
         # next(NewLineToken)
-        self.statements = stmtlist()
-        next()
+        # next()
+        # next(NewLineToken)
+        self.action = stmtlist()
+        # print "action", self.action 
+        # next()
+        next(EndToken)
         return self
     def eval(self):
 #        loops.append[self.second.eval()]
         loops[self.name] = True
+        for loop_vars in self.loop_vars:
+            
+            return loop_vars.eval()
+
         while loops[self.name]:
-            return self.statements.eval()
+            self.action.eval()
 
 class StopToken(StatementToken):
     lbp = None
     def std(self):
         next()
-        self.name = next.val
+        self.name = next().val
+        next(NewLineToken)
         return self 
     def eval(self):
         loops[self.name] = False
         return
+
+class ColonToken(Token):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
+
+class StartingToken(Token):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
+
+class WithToken(Token):
+    lbp = 0
+    def led(self):
+        pass
+    def nud(self):
+        pass
 
 class FinalToken(object):
     lbp = 0
@@ -378,11 +413,11 @@ token_exprs = [
     (r"'(.*)'",                  StringToken),
     (r'(<-)',                    AssignToken),
     (r'(\?)',                    QuestionToken),
-    (r'(\n)',                    NewLineToken),
+    (r'(\n+)',                    NewLineToken),
     (r'(\()',                    RESERVED),
     (r'(\))',                    RESERVED),
     (r'(;)',                     RESERVED),
-    (r'(:)',                     RESERVED),
+    (r'(:)',                     ColonToken),
     (r'(\.)',                    RESERVED),
     (r'(\,)',                    ConcatToken),
     (r'(\!)',                    RESERVED),
@@ -401,15 +436,15 @@ token_exprs = [
     (r'(or)',                    OrToken),
     (r'(not)',                   RESERVED),
     (r'(is)',                    IsToken),
-    (r'(then:)',                 ThenToken),
+    (r'(then:(\n)+)',                 ThenToken),
     (r'(loop)',                  LoopToken),
     (r'(list)',                  RESERVED),
-    # (r'(with)',                  WithToken),
-    # (r'(starting)',              StartingToken),
-    (r'(otherwise:)',            OtherwiseToken),
+    (r'(with(\n)+)',             WithToken),
+    (r'(starting)',              StartingToken),
+    (r'(otherwise:(\n)+)',            OtherwiseToken),
     (r'(show)',                  ShowToken),
     (r'(stop)',                  StopToken),
-    (r'(end)',                   EndToken),
+    (r'(end(\n)+)',                   EndToken),
     (r'(to)',                    ToToken),
     (r'(using)',                 UsingToken),
     (r'(randomize)',             RandomToken),
@@ -430,6 +465,7 @@ def next(expected_token_type = None):
 
     if tokens:
         if expected_token_type is not None:
+            print type(token), expected_token_type
             if type(token) != expected_token_type:
                 raise Exception("not the expected token")
         next_t = tokens.pop(0)
@@ -456,10 +492,18 @@ def expression(rbp=0):
 def statement():
     global token
     if isinstance(token, StatementToken):
+        # next(NewLineToken)
+
         return token.std()
+        # next(NewLineToken)
     else:
         expr = expression(0)
-        next(NewLineToken)
+        next()
+        # if type(token) == NewLineToken:
+        #     next()
+        #     next(NewLineToken)
+        # else:
+        #     next()
         if type(expr) not in [AssignToken, MoreToken, LessToken, MoreEqualToken, LessEqualToken, StringPromptToken, EqualToken, NumberPromptToken, RandomToken]:
             raise Exception("such expression doesn't exist")
         else:
@@ -480,8 +524,11 @@ def stmtlist():
     whatever = [] 
     while type(token) != FinalToken and type(token) != EndToken:
         s = statement();
+        print "statemet", s
         whatever.append(s)
     stmt_list = StatementList(whatever)
+    # print "stmt_list", stmt_list
+    print "whatever", whatever
     return stmt_list
     
         

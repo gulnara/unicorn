@@ -13,7 +13,11 @@ if __name__ == '__main__':
 	file.close()
 
 	unicorn_tokenize(characters)
-	tree = parse()
+	try:
+		tree = parse()
+	except:
+		print unicorn_tokenizer.tokens
+		raise
 	tree.eval()
 	print unicorn_tokenizer.global_env
 	

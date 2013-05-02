@@ -24,28 +24,16 @@ loop guessing:
 
 	or usernumber > number ? then:
 		show 'The number is too high. Try again.'
-
+	end
 	otherwise:
 		show 'You guessed it! Great job! You found my number!' 
 		stop guessing
+	end
 end 
 
 
 
-    stmt("while", function () {
-        advance("(");
-        this.first = expression(0);
-        advance(")");
-        this.second = block();
-        this.arity = "statement";
-        return this;
-    });
 
-    var block = function () {
-        var t = token;
-        advance("{");
-        return t.std();
-    };
 
 
     
