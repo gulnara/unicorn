@@ -70,5 +70,22 @@ show 'The number is too low. Try again.'
 or usernumber > number ? then:
 show 'The number is too high. Try again.'
 otherwise:
-show 'You guessed it! Great job! You found my number!'  
+show 'You guessed it! Great job! You found my number!' 
+show "The number was:"
+show number 
 
+#several statements within each block
+number <- 2
+usernumber <- 2
+is usernumber < number ? then:
+show 'The number is too low. Try again.'
+show 'cat'
+end
+or usernumber > number ? then:
+show 'The number is too high. Try again.'
+show 'moo'
+end
+otherwise:
+show 'You guessed it! Great job! You found my number!'
+show "yey"
+end

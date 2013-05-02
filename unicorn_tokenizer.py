@@ -4,6 +4,7 @@ tokens = []
 token = None
 
 global_env = {}
+loops = {}
 
 class Token(object):
     def __init__(self, val):
@@ -75,33 +76,57 @@ class ToToken(Token):
 class IsToken(StatementToken):
     def std(self):
         next()
-        self.first = expression(0)
-        print "first", self.first
+        self.conditionals = []
+        self.cond = expression(0)
+        # print "cond", self.cond
+        # print "first", self.first
         next(QuestionToken)
         next(ThenToken)
         next(NewLineToken)
-        self.second = statement()
-        print "second", self.second
-        next(OrToken)
-        self.third = expression(0)
-        print "third", self.third
-        next(QuestionToken)
-        next(ThenToken)
-        next(NewLineToken)
-        self.fourth = statement()
-        print "fourth", self.fourth
-        next(OtherwiseToken)
+        self.action = stmtlist()
+        # print "this is action", self.action
+        self.conditionals.append( (self.cond, self.action) )
+        # print "if ", self.conditionals
+        # print "second", self.second
+
+        # next(OrToken)
+        # next()
+        # next(NewLineToken)
+        next(EndToken)  
         next()
-        self.fifth = statement()
-        print "fifth", self.fifth
+        
+        while type(token) == OrToken:
+            next()
+            self.cond = expression(0)
+            # print "or cond", self.cond
+            next(QuestionToken)
+            next(ThenToken)
+            next(NewLineToken)
+            self.action = stmtlist()
+            self.conditionals.append( (self.cond, self.action) )
+            # print "or", self.conditionals
+            # next(NewLineToken)
+            next(EndToken)
+            next()
+            # next(NewLineToken)
+        if type(token) == OtherwiseToken:
+            next()
+            next(NewLineToken)
+            self.otherwise_action = stmtlist()
+            # print "otherwise", self.otherwise_action
+            # next(NewLineToken)
+            next(EndToken)
+        else:
+            self.otherwise_action = None
+        
         return self
     def eval(self): 
-        if self.first.eval() is True:
-            return self.second.eval()
-        elif self.third.eval() is True:
-            return self.fourth.eval()
-        else:
-            return self.fifth.eval()
+        for self.cond, self.action in self.conditionals:
+            if self.cond.eval() == True:
+                return self.action.eval()
+ 
+        if self.otherwise_action:
+            self.otherwise_action.eval()
 
 class QuestionToken(Token):
     lbp = 0
@@ -292,6 +317,42 @@ class AssignToken(Token):
     def eval(self):
         global_env[self.first.val] = self.second.eval()
 
+
+class LoopToken(StatementToken):
+    std = None
+    def std (self):
+        loop_name = next().val
+        self.name = loop_name
+        next(ColonToken)
+        next(NewLineToken)
+        next()
+        self.loop_vars = []
+        if instanceof(token, StartingToken):
+            next(WithToken)
+            while not instanceof(token, EndToken):
+                self.loop_vars.append(expression(0))
+                next(NewLineToken)
+        # self.second = expression(10)
+        # next(NewLineToken)
+        self.statements = stmtlist()
+        next()
+        return self
+    def eval(self):
+#        loops.append[self.second.eval()]
+        loops[self.name] = True
+        while loops[self.name]:
+            return self.statements.eval()
+
+class StopToken(StatementToken):
+    lbp = None
+    def std(self):
+        next()
+        self.name = next.val
+        return self 
+    def eval(self):
+        loops[self.name] = False
+        return
+
 class FinalToken(object):
     lbp = 0
     def led(self):
@@ -341,13 +402,13 @@ token_exprs = [
     (r'(not)',                   RESERVED),
     (r'(is)',                    IsToken),
     (r'(then:)',                 ThenToken),
-    # (r'(loop)',                  LoopToken),
+    (r'(loop)',                  LoopToken),
     (r'(list)',                  RESERVED),
     # (r'(with)',                  WithToken),
     # (r'(starting)',              StartingToken),
     (r'(otherwise:)',            OtherwiseToken),
     (r'(show)',                  ShowToken),
-    # (r'(stop)',                  StopToken),
+    (r'(stop)',                  StopToken),
     (r'(end)',                   EndToken),
     (r'(to)',                    ToToken),
     (r'(using)',                 UsingToken),
@@ -370,7 +431,7 @@ def next(expected_token_type = None):
     if tokens:
         if expected_token_type is not None:
             if type(token) != expected_token_type:
-                raise Exception("OMG THIS SUCKS")
+                raise Exception("not the expected token")
         next_t = tokens.pop(0)
         token = next_t
         return token
@@ -417,7 +478,7 @@ class StatementList(StatementToken):
 
 def stmtlist():
     whatever = [] 
-    while type(token) != FinalToken:
+    while type(token) != FinalToken and type(token) != EndToken:
         s = statement();
         whatever.append(s)
     stmt_list = StatementList(whatever)

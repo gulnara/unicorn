@@ -29,3 +29,23 @@ loop guessing:
 		show 'You guessed it! Great job! You found my number!' 
 		stop guessing
 end 
+
+
+
+    stmt("while", function () {
+        advance("(");
+        this.first = expression(0);
+        advance(")");
+        this.second = block();
+        this.arity = "statement";
+        return this;
+    });
+
+    var block = function () {
+        var t = token;
+        advance("{");
+        return t.std();
+    };
+
+
+    
