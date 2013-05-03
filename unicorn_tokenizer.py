@@ -303,7 +303,6 @@ class LoopToken(StatementToken):
                 self.lungs = stmtlist()
                 self.loop_vars.append(self.lungs)
             next(EndToken)
-            # next()
         self.action = stmtlist()
         next(EndToken)
         return self

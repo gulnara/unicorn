@@ -18,13 +18,13 @@ loop guessing:
         show 'The number is too high. Try again.'
     end
     otherwise:
-    show 'You guessed it! Great job! You found my number!' 
-    stop guessing
-    show "You guessed the number with this many tries:"
-    show guess
+        show 'You guessed it! Great job! You found my number!' 
+        stop guessing
+        show "You guessed the number with this many tries:"
+        show guess
     end
     is guess = 5 ? then:
-    stop guessing
-    show "You exceeded the number of guesses."
+        stop guessing
+        show "You exceeded the number of guesses."
     end
 end
