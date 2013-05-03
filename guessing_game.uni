@@ -13,8 +13,7 @@ i <- randomize using 1 to 20
 loop guessing:
 	starting with
 		initial guess <- 0
-	end
-
+	end 
 	guess <- guess + 1
 
 	usernumber <- prompt

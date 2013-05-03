@@ -17,4 +17,3 @@ loop guessing:
     show 'You guessed it! Great job! You found my number!' 
     end
 end
- 

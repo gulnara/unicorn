@@ -53,7 +53,6 @@ class RandomToken(Token):
         self.first = expression(0)
         next(ToToken)
         self.second = expression(0)
-        # next(NewLineToken)
         return self
     def eval(self):
         self.val = random.randint(self.first.eval(), self.second.eval())
@@ -78,42 +77,24 @@ class IsToken(StatementToken):
         next()
         self.conditionals = []
         self.cond = expression(0)
-        # print "cond", self.cond
         next(QuestionToken)
         next(ThenToken)
-        # next()
-        # next(NewLineToken)
         self.action = stmtlist()
-        # print "action ", self.action
-        # print "this is action", self.action
         self.conditionals.append( (self.cond, self.action) )
-        # print "if ", self.conditionals
-        # print "second", self.second
         next(EndToken)  
-        # next()
         
         while type(token) == OrToken:
             next()
             self.cond = expression(0)
-            # print "or cond", self.cond
             next(QuestionToken)
             next(ThenToken)
-            # next(NewLineToken)
             self.action = stmtlist()
             self.conditionals.append( (self.cond, self.action) )
-            # print "or", self.conditionals
-            # next(NewLineToken)
             next(EndToken)
-            # next()
         if type(token) == OtherwiseToken:
             next()
-            # next(NewLineToken)
             self.otherwise_action = stmtlist()
-            # print "otherwise", self.otherwise_action
-            # next(NewLineToken)
-            # next()
             next(EndToken)
-            # next()
         else:
             self.otherwise_action = None
         # next()
@@ -308,8 +289,6 @@ class AssignToken(Token):
     lbp = 100
     def led (self, left):
         self.first = left
-        # self.second = statement()
-        # print "this is second", self.second
         self.second = expression(10)
         return self
     def eval(self):
@@ -331,26 +310,15 @@ class LoopToken(StatementToken):
             next()
             print "Reading start section"
             next(WithToken)
-          
             while not type(token) == EndToken:
                 self.loop_vars.append(expression(0))
-                # next(NewLineToken)
             next(EndToken)
-            # next()
-            # next(NewLineToken)
-        # next(NewLineToken)
-        # next()
-        # next(NewLineToken)
         self.action = stmtlist()
-        # print "action", self.action 
-        # next()
         next(EndToken)
         return self
     def eval(self):
-#        loops.append[self.second.eval()]
         loops[self.name] = True
         for loop_vars in self.loop_vars:
-            
             return loop_vars.eval()
 
         while loops[self.name]:
@@ -364,6 +332,7 @@ class StopToken(StatementToken):
         next(NewLineToken)
         return self 
     def eval(self):
+        self = loop_name
         loops[self.name] = False
         return
 

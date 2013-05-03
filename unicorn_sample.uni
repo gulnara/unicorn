@@ -130,3 +130,64 @@ show 'You guessed it! Great job! You found my number!'
 stop guessing
 end
 end
+
+
+
+number <- 5
+loop guessing:
+starting with
+guess <- 0
+end
+guess <- guess + 1
+usernumber <- number_prompt
+is usernumber < number ? then:
+show 'The number is too low. Try again.'
+end
+or usernumber > number ? then:
+show 'The number is too high. Try again.'
+end
+otherwise:
+show 'You guessed it! Great job! You found my number!'
+stop guessing
+end
+end
+
+
+
+#working guessing game without a stop function
+show "What's your name?"
+name <- string_prompt
+show "hello"
+show name
+show "Let's play a game! Pick any number between 1 and 20."
+number <- randomize using 1 to 20
+show number
+loop guessing:
+    usernumber <- number_prompt
+    is usernumber < number ? then:
+        show 'The number is too low. Try again.'
+    end
+    or usernumber > number ? then:
+        show 'The number is too high. Try again.'
+    end
+    otherwise:
+    show 'You guessed it! Great job! You found my number!' 
+    end
+end
+
+
+number <- 5
+loop guessing:
+    usernumber <- number_prompt
+    is usernumber < number ? then:
+        show 'The number is too low. Try again.'
+    end
+    or usernumber > number ? then:
+        show 'The number is too high. Try again.'
+    end
+    otherwise:
+        show 'You guessed it! Great job! You found my number!'
+        stop guessing
+    end
+end
+ 
