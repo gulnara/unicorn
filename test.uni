@@ -15,5 +15,6 @@ loop guessing:
     end
     otherwise:
     show 'You guessed it! Great job! You found my number!' 
+    stop guessing
     end
 end

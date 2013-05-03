@@ -2,6 +2,8 @@ import unicorn_lexer
 import random
 tokens = []
 token = None
+loop_name = None
+next_name = None
 
 global_env = {}
 loops = {}
@@ -97,7 +99,6 @@ class IsToken(StatementToken):
             next(EndToken)
         else:
             self.otherwise_action = None
-        # next()
         return self
     def eval(self): 
         for self.cond, self.action in self.conditionals:
@@ -150,10 +151,8 @@ class MoreToken(Token):
         return self
     def eval(self):
         if self.first.eval() > self.second.eval():
-            # print "true"
             return True
         else:
-            # print "false"
             return False
 
 class LessToken(Token):
@@ -164,10 +163,8 @@ class LessToken(Token):
         return self
     def eval(self):
         if self.first.eval() < self.second.eval():
-            # print "true"
             return True
         else:
-            # print "false"
             return False           
 class EqualToken(Token):
     lbp = 20
@@ -177,10 +174,8 @@ class EqualToken(Token):
         return self
     def eval(self):
         if self.first.eval() == self.second.eval():
-            # print "true"
             return True
         else:
-            # print "false"
             return False 
 
 class MoreEqualToken(Token):
@@ -191,10 +186,8 @@ class MoreEqualToken(Token):
         return self
     def eval(self):
         if self.first.eval() >= self.second.eval():
-            # print "true"
             return True
         else:
-            # print "false"
             return False 
 
 class LessEqualToken(Token):
@@ -205,10 +198,8 @@ class LessEqualToken(Token):
         return self
     def eval(self):
         if self.first.eval() <= self.second.eval():
-            # print "true"
             return True
         else:
-            # print "false"
             return False 
 
 class IdToken(Token):
@@ -296,19 +287,17 @@ class AssignToken(Token):
 
 
 class LoopToken(StatementToken):
+    global loop_name
     lbp = None
     def std (self):
         loop_name = next().val
         self.name = loop_name
-        print "name", self.name
         next()
         next(ColonToken)
         next(NewLineToken)
         self.loop_vars = []
-        print type(token)
         if type(token) == StartingToken:
             next()
-            print "Reading start section"
             next(WithToken)
             while not type(token) == EndToken:
                 self.loop_vars.append(expression(0))
@@ -325,16 +314,19 @@ class LoopToken(StatementToken):
             self.action.eval()
 
 class StopToken(StatementToken):
+    global loop_name
+    global next_name
     lbp = None
     def std(self):
+        next_name = next().val
+        self.name = next_name
         next()
-        self.name = next().val
         next(NewLineToken)
-        return self 
+        return self
     def eval(self):
-        self = loop_name
-        loops[self.name] = False
-        return
+        if next_name == loop_name:
+            loops[self.name] = False
+            return
 
 class ColonToken(Token):
     lbp = 0
@@ -434,7 +426,7 @@ def next(expected_token_type = None):
 
     if tokens:
         if expected_token_type is not None:
-            print type(token), expected_token_type
+            # print "expected", type(token), expected_token_type
             if type(token) != expected_token_type:
                 raise Exception("not the expected token")
         next_t = tokens.pop(0)
@@ -461,18 +453,10 @@ def expression(rbp=0):
 def statement():
     global token
     if isinstance(token, StatementToken):
-        # next(NewLineToken)
-
         return token.std()
-        # next(NewLineToken)
     else:
         expr = expression(0)
         next()
-        # if type(token) == NewLineToken:
-        #     next()
-        #     next(NewLineToken)
-        # else:
-        #     next()
         if type(expr) not in [AssignToken, MoreToken, LessToken, MoreEqualToken, LessEqualToken, StringPromptToken, EqualToken, NumberPromptToken, RandomToken]:
             raise Exception("such expression doesn't exist")
         else:
@@ -493,11 +477,8 @@ def stmtlist():
     whatever = [] 
     while type(token) != FinalToken and type(token) != EndToken:
         s = statement();
-        print "statemet", s
         whatever.append(s)
     stmt_list = StatementList(whatever)
-    # print "stmt_list", stmt_list
-    print "whatever", whatever
     return stmt_list
     
         
