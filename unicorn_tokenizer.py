@@ -300,15 +300,17 @@ class LoopToken(StatementToken):
             next()
             next(WithToken)
             while not type(token) == EndToken:
-                self.loop_vars.append(expression(0))
+                self.lungs = stmtlist()
+                self.loop_vars.append(self.lungs)
             next(EndToken)
+            # next()
         self.action = stmtlist()
         next(EndToken)
         return self
     def eval(self):
         loops[self.name] = True
-        for loop_vars in self.loop_vars:
-            return loop_vars.eval()
+        for self.lungs in self.loop_vars:
+            self.lungs.eval()
 
         while loops[self.name]:
             self.action.eval()

@@ -154,7 +154,7 @@ end
 
 
 
-#working guessing game without a stop function
+#working guessing game
 show "What's your name?"
 name <- string_prompt
 show "hello"
@@ -172,22 +172,6 @@ loop guessing:
     end
     otherwise:
     show 'You guessed it! Great job! You found my number!' 
+    stop guessing
     end
 end
-
-
-number <- 5
-loop guessing:
-    usernumber <- number_prompt
-    is usernumber < number ? then:
-        show 'The number is too low. Try again.'
-    end
-    or usernumber > number ? then:
-        show 'The number is too high. Try again.'
-    end
-    otherwise:
-        show 'You guessed it! Great job! You found my number!'
-        stop guessing
-    end
-end
- 
