@@ -19,5 +19,5 @@ if __name__ == '__main__':
 		print unicorn_tokenizer.tokens
 		raise
 	tree.eval()
-	print unicorn_tokenizer.global_env
+	# print unicorn_tokenizer.global_env
 	

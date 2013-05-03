@@ -135,10 +135,6 @@ end
 
 number <- 5
 loop guessing:
-starting with
-guess <- 0
-end
-guess <- guess + 1
 usernumber <- number_prompt
 is usernumber < number ? then:
 show 'The number is too low. Try again.'
@@ -175,3 +171,9 @@ loop guessing:
     stop guessing
     end
 end
+
+
+#can attach variable values to strings when printing
+a <- "cat"
+show "hello ", a
+show "hi"

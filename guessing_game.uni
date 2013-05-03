@@ -1,10 +1,9 @@
 show "What's your name?"
 name <- string_prompt
-show "hello"
-show name
+show "Hello ", name
 show "Let's play a game! Pick any number between 1 and 20."
+show "You have 5 tries!"
 number <- randomize using 1 to 20
-show number
 loop guessing:
     starting with
         guess <- 0
@@ -20,8 +19,7 @@ loop guessing:
     otherwise:
         show 'You guessed it! Great job! You found my number!' 
         stop guessing
-        show "You guessed the number with this many tries:"
-        show guess
+        show "You guessed the number with this many tries: ", guess
     end
     is guess = 5 ? then:
         stop guessing

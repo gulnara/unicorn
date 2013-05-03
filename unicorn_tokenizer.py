@@ -27,10 +27,23 @@ class ShowToken(StatementToken):
     def std(self):
         next()
         self.second = expression(0)
+        if type(token) == ConcatToken:
+            next()
+            self.action = expression(0)
+        else:
+            self.action = None
+            # next()
+            # next(NewLineToken)
         next(NewLineToken)
         return self
     def eval(self):
-        print self.second.eval()
+        if self.action is not None:
+            if isinstance(self.action.eval(), int):
+                print self.second.eval() + str(self.action.eval())
+            else:
+                print self.second.eval() + self.action.eval()
+        else:
+            print self.second.eval()
 
 class NumberPromptToken(Token):
     lbp = 10
@@ -266,14 +279,12 @@ class IntToken(Token):
     def eval(self):
         return self.val
 
-#not finished
 class ConcatToken(Token):
-    lbp = 20
+    lbp = 0
     def led(self):
-        self.second = expression(20)
-        return self
-    def eval(self):
-        print self.second.eval()
+        pass
+    def nud(self):
+        pass
 
 
 class AssignToken(Token):
