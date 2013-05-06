@@ -43,10 +43,14 @@ a <- 5
 b <- 10
 is a<b ? then:
 show "The number is too low. Try again."
+end
 or a>b ? then:
 show "moo"
+end
 otherwise:
 show "cat"
+end
+
 
 #asks user what's his/her name , takes and stores the input, displays the input
 show "What's your name?"
