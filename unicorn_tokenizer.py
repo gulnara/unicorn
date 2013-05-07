@@ -19,6 +19,17 @@ class StatementToken(Token):
     def __init__(self, val):
         self.val = val
 
+class StatementList(StatementToken):
+    def __init__(self, statements):
+        self.statements = statements
+
+    def std(self):
+        pass
+
+    def eval(self):
+        for stmt in self.statements:
+            stmt.eval()
+
 class ExprToken(Token):
         pass
 
@@ -474,16 +485,7 @@ def statement():
         else:
             return expr
 
-class StatementList(StatementToken):
-    def __init__(self, statements):
-        self.statements = statements
 
-    def std(self):
-        pass
-
-    def eval(self):
-        for stmt in self.statements:
-            stmt.eval()
 
 def stmtlist():
     whatever = [] 
