@@ -8,6 +8,8 @@ next_name = None
 global_env = {}
 loops = {}
 
+# Defining classes of tokens.
+
 class Token(object):
     def __init__(self, val):
         self.val = val
@@ -387,6 +389,7 @@ class NewLineToken(Token):
     def nud(self):
         pass
 
+# Lexer includes Reserved tokens, which have not been incorporated in the language yet.
 
 RESERVED = ReservedToken
 
@@ -439,11 +442,15 @@ token_exprs = [
     (r'\'',                    None),
 ]
 
+# Tokenizer finds tokens in a string
+
 def unicorn_tokenize(characters):
     global tokens, token
     tokens = unicorn_lexer.lex(characters, token_exprs)
     token = tokens.pop(0)
     # print tokens
+
+# next() function generates new tokens for the parser.
 
 def next(expected_token_type = None):
     global token
@@ -457,6 +464,8 @@ def next(expected_token_type = None):
     else:
         token = FinalToken()
         return token
+
+# expression() function encapsulates the core of Pratt's algorithm.
 
 def expression(rbp=0):
     global token
@@ -472,6 +481,7 @@ def expression(rbp=0):
         statement()
     return left
 
+# statement() function decides based on a token which parser to use - recursive decent or Pratt parser.
 
 def statement():
     global token
