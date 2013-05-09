@@ -46,6 +46,7 @@ class ShowToken(StatementToken):
             # next()
             # next(NewLineToken)
         next(NewLineToken)
+        # next()
         return self
     def eval(self):
         if self.action is not None:
@@ -446,17 +447,16 @@ def unicorn_tokenize(characters):
 
 def next(expected_token_type = None):
     global token
-
     if tokens:
         if expected_token_type is not None:
-            # print "expected", type(token), expected_token_type
             if type(token) != expected_token_type:
                 raise Exception("not the expected token")
         next_t = tokens.pop(0)
         token = next_t
         return token
     else:
-        return FinalToken()
+        token = FinalToken()
+        return token
 
 def expression(rbp=0):
     global token

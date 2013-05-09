@@ -19,24 +19,30 @@ show c
 # check if 5<4 if yes print first level
 is 5<4 ? then:
 show "first level"
+end
 
 is 6>3 ? then:
 show "more?"
+end
 
 is 6=6 ? then:
 show "equal?"
+end
 
 is 7>=7 ? then:
 show "more or equal"
+end
 
 is 8<=8 ? then:
 show "less or equal"
+end
 
 #assign 10 to a
 a <- 10
 #check if a is less than 20, print stmt if yes
 is a < 20 ? then:
 show 'The number is too low. Try again.'
+end
 
 #will print out the number is too low
 a <- 5
