@@ -498,11 +498,11 @@ def statement():
 
 
 def stmtlist():
-    whatever = [] 
+    list_of_stmts = [] 
     while type(token) != FinalToken and type(token) != EndToken:
         s = statement();
-        whatever.append(s)
-    stmt_list = StatementList(whatever)
+        list_of_stmts.append(s)
+    stmt_list = StatementList(list_of_stmts)
     return stmt_list
     
         
